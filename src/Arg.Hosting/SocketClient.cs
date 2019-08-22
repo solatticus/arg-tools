@@ -21,7 +21,7 @@ namespace Arg.Hosting
         {
             Socket = clientSocket;
             ConnectedOn = DateTime.UtcNow;
-            Id = Guid.NewGuid();
+            ConnectionId = Guid.NewGuid();
         }
 
         private void OnDisconnect()

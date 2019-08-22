@@ -13,6 +13,5 @@ namespace Arg.Hosting.Components
         {
             Name = roomName;
         }
-        public 
     }
 }
