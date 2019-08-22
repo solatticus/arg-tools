@@ -116,6 +116,8 @@ namespace Arg.Hosting
 
             foreach(var component in _components)
             {
+                await component.ClientConnects(connection); // only once
+
                 _inDelegates += component.Receive;
                 _outDelegates += component.Write;
             }
@@ -139,8 +141,10 @@ namespace Arg.Hosting
             _ = Task.Run(async () => {
                 var msg = new SocketMessage(buffer);
 
-                await _inDelegates(ClientSessions[client], client, msg);
-                await _outDelegates(ClientSessions[client], client, msg);
+                var i = _inDelegates(ClientSessions[client], client, msg);
+                var o =_outDelegates(ClientSessions[client], client, msg);
+
+                await Task.WhenAll(i, o);
             });
         }
 

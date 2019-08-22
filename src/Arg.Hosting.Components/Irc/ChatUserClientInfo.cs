@@ -7,6 +7,6 @@ namespace Arg.Hosting.Components
     public class ChatUserClientInfo
     {
         public string Alias { get; set; }
-        public ChatUserStates State { get; set; }
+        public ChatStates State { get; set; }
     }
 }

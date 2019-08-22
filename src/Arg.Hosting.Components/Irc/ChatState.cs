@@ -5,7 +5,7 @@ using System.Text;
 namespace Arg.Hosting.Components
 {
     [Flags]
-    public enum ChatUserStates : byte
+    public enum ChatStates : byte
     {
         Disconnected = 0,
         Connected = 1,
@@ -18,23 +18,23 @@ namespace Arg.Hosting.Components
         Admin = 128
     }
 
-    public class ChatUserState
+    public class ChatState
     {
         private readonly ISocketClient _client;
         private string _currentRoom = "lobby";
 
-        public ChatUserStates Flags { get; set; }
+        public ChatStates Flags { get; set; }
         public string Alias { get; set; }
         public Guid ConnectionId { get => _client.ConnectionId; }
         public string Prompt { get => $"{_currentRoom}>"; set => _currentRoom = value; }
         public string LinePrompt { get => $"\n{_currentRoom}>"; set => _currentRoom = value; }
 
-        public ChatUserState(ISocketClient client)
+        public ChatState(ISocketClient client)
         {
             _client = client;
 
             Alias = "anonymous";
-            Flags = ChatUserStates.Connected;
+            Flags = ChatStates.Connected;
         }
 
         public void SendMessage(string message)

@@ -7,7 +7,7 @@ namespace Arg.Hosting.Components
     public class ChatRoom
     {
         public string Name { get; }
-        public List<ChatUserState> Users { get; set; } = new List<ChatUserState>();
+        public List<ChatState> Users { get; set; } = new List<ChatState>();
 
         public ChatRoom(string roomName)
         {

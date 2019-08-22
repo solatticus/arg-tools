@@ -11,7 +11,9 @@ namespace Arg.Hosting.Components
     public class ChatServerComponent : ServerComponent
     {
         private readonly string _welcomeMessage = "Chat v0.1.1\n\nEnter an alias>";
-        private readonly ConcurrentDictionary<ISocketClient, ChatUserState> _clientStates = new ConcurrentDictionary<ISocketClient, ChatUserState>();
+        private readonly ConcurrentDictionary<ISocketClient, ChatState> _clientStates = new ConcurrentDictionary<ISocketClient, ChatState>();
+
+        private readonly bool _allowAnonymous = false;
 
         public ChatServerComponent()
         {
@@ -20,8 +22,13 @@ namespace Arg.Hosting.Components
 
         protected override void WhenClientConnects(ISocketClient client)
         {
-            if (!_clientStates.TryAdd(client, new ChatUserState(client)))
+            var newUser = new ChatState(client);
+
+            if (!_clientStates.TryAdd(client, newUser))
                 return;
+
+            if(!_allowAnonymous)
+                newUser.Flags |= ChatStates.Authenticating;
 
             client.Send(Encoding.UTF8.GetBytes(_welcomeMessage));
         }
@@ -36,10 +43,14 @@ namespace Arg.Hosting.Components
                 return;
             }
 
-            var success = ((byte)user.Flags) switch // discarding to use cooler syntax
+            var success = (user.Flags) switch // discarding to use cooler syntax
             {
-                (byte)ChatUserStates.Authenticated => ProcessMessage(session, client, message),
-                (byte)ChatUserStates.Authenticating => ProcessPendingAuth(session, client, message),
+                ChatStates.Connected 
+                | ChatStates.Authenticated => ProcessMessage(session, client, message),
+
+                ChatStates.Connected 
+                | ChatStates.Authenticating => ProcessPendingAuth(session, client, message),
+
                 _ => false
             };
 
@@ -60,7 +71,7 @@ namespace Arg.Hosting.Components
                 return false;
             }
 
-
+            //TODO: Assign alias to state etc... probably things not thought of yet ;)
 
             return true;
         }
