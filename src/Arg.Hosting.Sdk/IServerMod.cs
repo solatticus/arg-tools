@@ -8,7 +8,6 @@ namespace Arg.Hosting.Sdk
         string Name { get; }
 
         Task ClientConnects(ISocketClient client);
-
         Task Receive(ISessionData sessino, ISocketClient client, ISocketMessage message);
         Task Write(ISessionData sessino, ISocketClient client, ISocketMessage message);
     }
