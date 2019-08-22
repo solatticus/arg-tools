@@ -10,16 +10,18 @@ namespace Arg.Hosting
 {
     public class SocketClient : ISocketClient
     {
+        public Guid ConnectionId { get; }
         public ClientStates State { get; set; } = ClientStates.None;
         public Socket Socket { get; }
         public DateTime ConnectedOn { get; }
-
+        
         public event SocketClientEventHandler Disconnected;
 
         public SocketClient(Socket clientSocket)
         {
             Socket = clientSocket;
             ConnectedOn = DateTime.UtcNow;
+            Id = Guid.NewGuid();
         }
 
         private void OnDisconnect()
