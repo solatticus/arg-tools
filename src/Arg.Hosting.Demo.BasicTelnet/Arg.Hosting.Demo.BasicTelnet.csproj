@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Arg.Hosting.Components\Arg.Hosting.Components.csproj" />
+    <ProjectReference Include="..\Arg.Hosting.Sdk\Arg.Hosting.Sdk.csproj" />
+    <ProjectReference Include="..\Arg.Hosting\Arg.Hosting.csproj" />
+  </ItemGroup>
+
+</Project>

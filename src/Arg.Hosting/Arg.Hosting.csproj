@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Pipelines" Version="4.6.0-preview8.19405.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Arg.Hosting.Components\Arg.Hosting.Components.csproj" />
+    <ProjectReference Include="..\Arg.Hosting.Sdk\Arg.Hosting.Sdk.csproj" />
+  </ItemGroup>
+
+</Project>
