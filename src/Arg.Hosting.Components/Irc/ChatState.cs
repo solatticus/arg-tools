@@ -1,5 +1,7 @@
-﻿using Arg.Hosting.Sdk;
+﻿using Arg.Hosting.Components.Irc;
+using Arg.Hosting.Sdk;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Arg.Hosting.Components
@@ -28,6 +30,8 @@ namespace Arg.Hosting.Components
         public Guid ConnectionId { get => _client.ConnectionId; }
         public string Prompt { get => $"{_currentRoom}>"; set => _currentRoom = value; }
         public string LinePrompt { get => $"\n{_currentRoom}>"; set => _currentRoom = value; }
+
+        public List<ISlashCommand> Commands { get; } = new List<ISlashCommand>();
 
         public ChatState(ISocketClient client)
         {

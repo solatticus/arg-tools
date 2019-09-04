@@ -8,7 +8,7 @@ namespace Arg.Hosting
     [DebuggerDisplay("{value}", Name = "{Line}")]
     public class SocketMessage : ISocketMessage
     {
-        protected volatile byte[] _rawBytes;
+        protected byte[] _rawBytes;
 
         public byte FirstByte { get => _rawBytes[0]; }
 
@@ -17,7 +17,7 @@ namespace Arg.Hosting
             get { return Encoding.UTF8.GetString(_rawBytes); }
         }
         
-        public SocketMessage(byte[] msgBytes)
+        public SocketMessage(ref byte[] msgBytes)
         {
             _rawBytes = msgBytes;
         }

@@ -139,7 +139,7 @@ namespace Arg.Hosting
         private static void ApplyBufferToComponents(SocketClient client, byte[] buffer)
         {
             _ = Task.Run(async () => {
-                var msg = new SocketMessage(buffer);
+                var msg = new SocketMessage(ref buffer);
 
                 var i = _inDelegates(ClientSessions[client], client, msg);
                 var o =_outDelegates(ClientSessions[client], client, msg);

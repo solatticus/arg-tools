@@ -1,18 +1,21 @@
-﻿using Arg.Hosting.Sdk;
+﻿using Arg.Hosting.Components.Irc;
+using Arg.Hosting.Components.Irc.SlashCommands;
+using Arg.Hosting.Sdk;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Arg.Hosting.Components
 {
     public class ChatServerComponent : ServerComponent
     {
-        private readonly string _welcomeMessage = "Chat v0.1.1\n\nEnter an alias>";
+        private readonly string _welcomeMessage = "Chat v0.1.1\rEnter an alias>";
         private readonly ConcurrentDictionary<ISocketClient, ChatState> _clientStates = new ConcurrentDictionary<ISocketClient, ChatState>();
-
+        private readonly ServerState _serverState = new ServerState();
         private readonly bool _allowAnonymous = false;
 
         public ChatServerComponent()
@@ -71,7 +74,13 @@ namespace Arg.Hosting.Components
                 return false;
             }
 
-            //TODO: Assign alias to state etc... probably things not thought of yet ;)
+            user.Alias = Encoding.ASCII.GetString(msg);
+            user.Commands.Add(new JoinCommand()); //TODO: Populate commands based on access? Dunno
+            user.Commands.Add(new ListRoomsCommand());
+
+            client.Send(_($"Welcome {user.Alias}\n>"));
+
+            user.Flags = ChatStates.Connected | ChatStates.Authenticated;
 
             return true;
         }
@@ -80,7 +89,42 @@ namespace Arg.Hosting.Components
         {
             var user = _clientStates.Values.Where(c => c.ConnectionId == client.ConnectionId).SingleOrDefault();
 
+            byte[] bytes = message.GetRawBytes();
+
+            string result = (bytes[0]) switch
+            {
+                (byte)'/' => ProcessSlashCommand(user, session, client, ref bytes),
+                (byte)'?' => GetHelpText(),
+                _ => "Bad command or file name." // :)
+            };
+
+            client.Send(Encoding.ASCII.GetBytes(result + "\n"));
+
             return true;
+        }
+
+        private string GetHelpText() 
+            => "\n/join <room>\tJoins a room.\n/list       \tLists available rooms.\n>";
+
+        private string ProcessSlashCommand(ChatState userState, ISessionData session, ISocketClient client, ref byte[] bytes)
+        {
+            byte[] tmpBytes;
+            ISlashCommand command = null;
+            foreach(var cmd in userState.Commands)
+            {
+                tmpBytes = cmd.Identifier;
+                if (bytes.IndexOfSequence(ref tmpBytes) > -1)
+                    command = cmd;
+            }
+
+            if (command != null)
+            {
+                var content = bytes.Skip(command.Identifier.Length).Take(bytes.Length - command.Identifier.Length).ToArray();
+                command.Execute(ref content, _serverState, session, client);
+                return string.Empty;
+            }
+
+            return "Invalid slash command.";
         }
 
         private static byte[] _(string toEncode)
