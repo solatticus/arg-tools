@@ -11,4 +11,10 @@
     <ProjectReference Include="..\Arg.Hosting\Arg.Hosting.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestMovie.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

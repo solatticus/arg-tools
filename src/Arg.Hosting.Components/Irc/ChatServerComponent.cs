@@ -13,7 +13,8 @@ namespace Arg.Hosting.Components
 {
     public class ChatServerComponent : ServerComponent
     {
-        private readonly string _welcomeMessage = "Chat v0.1.1\rEnter an alias>";
+        private const string NL = "\r\n";
+        private readonly string _welcomeMessage = "Chat v0.1.2" + NL + "Enter an alias>";
         private readonly ConcurrentDictionary<ISocketClient, ChatState> _clientStates = new ConcurrentDictionary<ISocketClient, ChatState>();
         private readonly ServerState _serverState = new ServerState();
         private readonly bool _allowAnonymous = false;
@@ -119,7 +120,10 @@ namespace Arg.Hosting.Components
 
             if (command != null)
             {
-                var content = bytes.Skip(command.Identifier.Length).Take(bytes.Length - command.Identifier.Length).ToArray();
+                var content = bytes.Skip(command.Identifier.Length)
+                                    .Take(bytes.Length - command.Identifier.Length)
+                                    .ToArray();
+
                 command.Execute(ref content, _serverState, session, client);
                 return string.Empty;
             }
