@@ -31,3 +31,4 @@ Here's all you need to start a server that streams an ASCII movie to each connec
             server.StartConsole();
         }
 `````
+-The .txt file movie was taken from [@nitram509](https://github.com/nitram509/ascii-telnet-server)
