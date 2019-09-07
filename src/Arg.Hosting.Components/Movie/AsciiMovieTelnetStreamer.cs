@@ -45,20 +45,27 @@ namespace Arg.Hosting.Components.Movie
                     var lineTemp = _reader.ReadLine() + CRLF;
 
                     if (i == 0)
+                    {
                         loopCount = Encoding.ASCII.GetBytes(lineTemp)[0];
+                        lineTemp = " " + CRLF;
+                    }
 
                     sb.Append(lineTemp + CRLF); // \r\n to the terminal client
                 }
-                
+
                 frameBytes = Encoding.ASCII.GetBytes(sb.ToString()); // first byte should be the loopcount
                 frameBytes[0] = Encoding.ASCII.GetBytes(" ")[0]; // space instead of framecount
-                
+
                 sb.Clear();
-                
+
                 for (var z = 0; z < loopCount; z++)
                 {
-                    client.Send(_clearScreen);
-                    client.Send(frameBytes);
+                    if(z == 0) // don't spam the same frame over and over
+                    {
+                        client.Send(_clearScreen);
+                        client.Send(frameBytes);
+                    }
+
                     Thread.Sleep(20);
                 }
             }
